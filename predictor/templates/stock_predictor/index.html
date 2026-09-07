@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Predictor - ML Powered</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📈 Stock Price Prediction System</h1>
+            <p class="subtitle">Powered by Machine Learning Algorithms</p>
+            <div class="user-info">
+                <span class="welcome-text">Welcome, {{ user.username }}!</span>
+                <div class="header-buttons">
+                    <a href="{% url 'predictor:history' %}" class="btn btn-history">📊 View History</a>
+                    <a href="{% url 'predictor:logout' %}" class="btn btn-logout">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="main-content">
+            <div class="control-panel">
+                <div class="card">
+                    <h2>Select Company</h2>
+                    <select id="companySelect" class="select-input">
+                        <option value="">Choose a company...</option>
+                        {% for company in companies %}
+                        <option value="{{ company.symbol }}">{{ company.display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="card" id="companyInfo" style="display: none;">
+                    <h2>Company Information</h2>
+                    <div class="company-header">
+                        <div class="company-title">
+                            <h3 id="companyName">Company Name</h3>
+                            <span id="companySymbol" class="company-symbol">SYMBOL</span>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Current Price:</span>
+                            <span class="value" id="currentPrice">$0.00</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Net Change:</span>
+                            <span class="value" id="netChange">$0.00</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">% Change:</span>
+                            <span class="value" id="percentChange">0%</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Volume:</span>
+                            <span class="value" id="volume">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Prediction Settings</h2>
+                    <div class="form-group">
+                        <label for="daysInput">Forecast Days:</label>
+                        <input type="number" id="daysInput" class="input-field" value="30" min="1" max="365">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Algorithm:</label>
+                        <div class="algorithm-buttons">
+                            <button class="btn btn-algorithm active" data-algo="linear">
+                                Linear Regression
+                            </button>
+                            <button class="btn btn-algorithm" data-algo="lstm">
+                                LSTM Neural Network
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="predictBtn" class="btn btn-primary" disabled>
+                        🔮 Predict Stock Price
+                    </button>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <div class="card chart-card">
+                    <h2>Stock Price Chart</h2>
+                    <div id="loadingSpinner" class="spinner" style="display: none;">
+                        <div class="spinner-circle"></div>
+                        <p>Analyzing data and generating predictions...</p>
+                    </div>
+                    <canvas id="stockChart"></canvas>
+                </div>
+
+                <div class="card stats-card" id="statsCard" style="display: none;">
+                    <h2>Prediction Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Algorithm Used</div>
+                            <div class="stat-value" id="algoUsed">-</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Predicted Price</div>
+                            <div class="stat-value" id="predictedPrice">$0.00</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Expected Change</div>
+                            <div class="stat-value" id="priceChange">0%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Forecast Period</div>
+                            <div class="stat-value" id="forecastDays">0 days</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Model Accuracy</div>
+                            <div class="stat-value" id="modelAccuracy">--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Confidence Level</div>
+                            <div class="stat-value" id="confidenceLevel">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/script.js' %}?v=2"></script>
+</body>
+</html>

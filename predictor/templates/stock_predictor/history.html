@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search History - Stock Price Predictor</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/history.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Search History</h1>
+            <p class="subtitle">View your past predictions</p>
+            <div class="header-actions">
+                <a href="{% url 'predictor:index' %}" class="btn btn-secondary">← Back to Dashboard</a>
+                <a href="{% url 'predictor:logout' %}" class="btn btn-danger">Logout</a>
+            </div>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="history-content">
+            <div class="history-header">
+                <h2>Your Prediction History</h2>
+                {% if history %}
+                <a href="{% url 'predictor:clear_history' %}" class="btn btn-clear" onclick="return confirm('Are you sure you want to clear all history?')">
+                    🗑️ Clear All History
+                </a>
+                {% endif %}
+            </div>
+
+            {% if history %}
+            <div class="history-grid">
+                {% for item in history %}
+                <div class="history-card">
+                    <div class="history-card-header">
+                        <div>
+                            <div class="history-symbol">{{ item.symbol }}</div>
+                            <div class="history-company-name">{{ item.company_name }}</div>
+                        </div>
+                        <div class="history-date">{{ item.searched_at|date:"M d, Y - H:i" }}</div>
+                    </div>
+
+                    <div class="history-details">
+                        <div class="history-item">
+                            <span class="label">Algorithm:</span>
+                            <span class="value">{{ item.algorithm }}</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="label">Forecast Period:</span>
+                            <span class="value">{{ item.forecast_days }} days</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="label">Current Price:</span>
+                            <span class="value">${{ item.current_price|floatformat:2 }}</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="label">Predicted Price:</span>
+                            <span class="value">${{ item.predicted_price|floatformat:2 }}</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="label">Expected Change:</span>
+                            <span class="value {% if item.price_change_percent > 0 %}positive{% else %}negative{% endif %}">
+                                {% if item.price_change_percent > 0 %}+{% endif %}{{ item.price_change_percent|floatformat:2 }}%
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="history-actions">
+                        <a href="{% url 'predictor:delete_history' item.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this item?')">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-history">
+                <div class="no-history-icon">📭</div>
+                <h3>No Search History</h3>
+                <p>You haven't made any predictions yet. Start predicting stock prices to see your history here!</p>
+                <a href="{% url 'predictor:index' %}" class="btn btn-primary">Start Predicting</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
