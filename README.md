@@ -1,289 +1,111 @@
-📈 Stock Price Prediction System
+# 📈 Stock Price Prediction System
 
-A Django-based Stock Price Prediction System that combines web development and machine learning to provide stock-related predictions through a user-friendly web interface.
+A full-stack **Django web application** that integrates a **machine learning pipeline** to generate stock price predictions, complete with user authentication and prediction history tracking.
 
-Demo Video Link is :
-https://drive.google.com/file/d/1yiLLWwpyOZGYzGjnm9g21GjmnuKuI_g3/view?usp=drive_link
+> ⚠️ **Disclaimer:** Built for educational and portfolio purposes. Predictions are not financial advice.
 
-🚀 Project Overview
+**[▶ Demo Video](https://drive.google.com/file/d/1yiLLWwpyOZGYzGjnm9g21GjmnuKuI_g3/view?usp=drive_link)**
 
-This project is built using Python, Django, Pandas, NumPy, and Machine Learning. It provides a web application where users can work with stock data and generate predictions through the Django interface.
+---
 
-The project is designed as a practical demonstration of integrating a machine-learning workflow into a Django web application.
+## 🚀 Overview
 
-Disclaimer: This project is for educational and demonstration purposes only. Stock-market predictions are inherently uncertain and should not be considered financial advice.
+This project demonstrates end-to-end ML integration into a production-style web app — from data ingestion and model training to serving predictions through a secured Django interface. It covers the full stack: backend architecture, data processing, model evaluation, and frontend delivery.
 
-✨ Features
+## ✨ Key Features
 
-📊 Stock data processing and analysis
+- 🤖 ML-based stock price prediction (multiple models benchmarked)
+- 🌐 Django web application with a clean HTML/CSS/JS interface
+- 🔐 User registration, login, and session-based access
+- 📜 Prediction history tracking per user
+- 📁 CSV-based data pipeline with a custom Django management command for data loading
 
-🤖 Machine-learning based stock prediction
+## 🛠️ Tech Stack
 
-🌐 Django web application
+| Layer | Technologies |
+|---|---|
+| **Backend** | Python, Django |
+| **ML / Data** | Pandas, NumPy, Scikit-learn |
+| **Frontend** | HTML5, CSS3, JavaScript |
+| **Database** | SQLite3 (dev) |
 
-🔐 User registration and login
+## 📊 Results
 
-📜 Prediction/history functionality
+Two model families were benchmarked across multiple tickers (AAPL, MSFT, GOOGL) on held-out test data to compare predictive accuracy against computational cost:
 
-📁 Stock data stored in CSV files
+| Model | Avg. R² | Avg. MAPE | Avg. Train Time | Avg. Inference Time |
+|---|---|---|---|---|
+| **Linear Regression** | **0.976** | **0.75%** | ~83 ms | ~0.001 ms/pred |
+| LSTM | 0.553 | 3.47% | ~13.6 s | ~2.76 ms/pred |
 
-🧩 Django management command for loading stock data
+**Key finding:** the Linear Regression baseline outperformed the LSTM model on this dataset — achieving higher R² and lower error across all three tickers, while training over 150x faster. This highlights a core ML engineering lesson: model complexity doesn't guarantee better performance, especially on limited or non-stationary financial time-series data. The evaluation pipeline (`evaluation_results.csv`) is included for full reproducibility across per-ticker metrics (RMSE, MAE, MAPE, R², latency).
 
-🎨 HTML/CSS/JavaScript based interface
+## 📂 Project Structure
 
-📱 Web-based prediction workflow
-
-🛠️ Technologies Used
-
-Backend
-
-Python
-
-Django
-
-Machine Learning & Data Science
-
-Pandas
-
-NumPy
-
-Scikit-learn
-
-Frontend
-
-HTML5
-
-CSS3
-
-JavaScript
-
-Database
-
-SQLite3 for local development
-
-Data
-
-stock_data_complete.csv
-
-Tickers.csv
-
-📂 Project Structure
-
+```
 Stock_prediction/
-│
 ├── predictor/
-│   ├── management/
-│   │   └── commands/
-│   │       └── load_stock_data.py
-│   ├── migrations/
-│   ├── static/
-│   │   ├── css/
-│   │   │   ├── auth.css
-│   │   │   ├── history.css
-│   │   │   └── style.css
-│   │   └── js/
-│   │       └── script.js
-│   ├── templates/
-│   │   ├── registration/
-│   │   │   ├── login.html
-│   │   │   └── signup.html
-│   │   └── stock_predictor/
-│   │       ├── history.html
-│   │       └── index.html
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── urls.py
-│   ├── views.py
-│   └── tests.py
-│
-├── Stock_prediction/
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-│
-├── manage.py
-├── requirements.txt
+│   ├── management/commands/load_stock_data.py
+│   ├── static/{css,js}/
+│   ├── templates/{registration,stock_predictor}/
+│   ├── models.py, views.py, urls.py, admin.py, tests.py
+├── Stock_prediction/          # Django project settings
 ├── stock_data_complete.csv
 ├── Tickers.csv
-├── db.sqlite3
-└── README.md
+├── requirements.txt
+└── manage.py
+```
 
-💻 Installation
+## 💻 Quick Start
 
-1. Clone the repository
-
+```bash
+# Clone & enter the repo
 git clone https://github.com/ritin3098-bit/Stock-Price-Prediction-Sysytem.git
 cd Stock-Price-Prediction-Sysytem
 
-2. Create a virtual environment
-
-Windows:
-
+# Set up environment
 python -m venv venv
-
-Activate it:
-
-venv\Scripts\activate
-
-3. Install dependencies
-
+venv\Scripts\activate          # Windows
 pip install -r requirements.txt
 
-4. Apply migrations
-
+# Initialize the app
 python manage.py migrate
-
-5. Load stock data
-
-If your project uses the included management command:
-
 python manage.py load_stock_data
-
-6. Create an admin user
-
 python manage.py createsuperuser
-
-Follow the prompts to create your Django administrator account.
-
-7. Start the development server
-
 python manage.py runserver
+```
 
-Open:
+Visit **http://127.0.0.1:8000/**
 
-http://127.0.0.1:8000/
+## 🔄 Application Workflow
 
-🔄 Application Workflow
+```
+User → Django Interface → Stock Selection → Data Processing
+     → ML Model Inference → Prediction Display → History Log
+```
 
-User
-  ↓
-Django Web Interface
-  ↓
-Select / Enter Stock Information
-  ↓
-Stock Data Processing
-  ↓
-Machine Learning Model
-  ↓
-Prediction
-  ↓
-Display Result
-  ↓
-Save / View Prediction History
+## 🧪 Testing
 
-📊 Dataset
+```bash
+python manage.py test    # Run test suite
+python manage.py check   # Validate project config
+```
 
-The project includes stock-market data in:
+## 🔮 Roadmap
 
-stock_data_complete.csv
+- Interactive & historical price charts
+- Automated market-data refresh via API
+- Additional models + systematic performance comparison
+- Cloud DB (PostgreSQL) + production deployment (Gunicorn)
+- Prediction/price alerts
 
-Ticker information is stored in:
+## 🔐 Production Checklist
 
-Tickers.csv
+`DEBUG=False` · secure `SECRET_KEY` · configured `ALLOWED_HOSTS` · env-based secrets · production static files & database
 
-The dataset can be processed and loaded into the Django application using the included management command.
+## 👨‍💻 Author
 
-🤖 Machine Learning
+**Ritin Setia** — [GitHub](https://github.com/ritin3098-bit)
 
-The machine-learning component is integrated into the Django application to process stock information and generate predictions.
-
-The general workflow is:
-
-Load stock data
-
-Clean and preprocess the data
-
-Select relevant features
-
-Train/use the machine-learning model
-
-Generate predictions
-
-Display predictions through Django
-
-The exact prediction performance depends on the dataset, model, features, and market conditions.
-
-🔐 Security Notes
-
-Before deploying this application publicly:
-
-Set DEBUG = False
-
-Use a secure Django SECRET_KEY
-
-Configure ALLOWED_HOSTS
-
-Do not commit .env files or API keys
-
-Use environment variables for secrets
-
-Configure production static files
-
-Use a production database instead of SQLite where appropriate
-
-🌐 Deployment
-
-This project can be deployed using platforms such as:
-
-Render
-
-Railway
-
-PythonAnywhere
-
-Other Django-compatible cloud platforms
-
-For production deployment, use a production WSGI/ASGI server such as Gunicorn rather than Django's development server.
-
-🧪 Testing
-
-Run Django's test suite with:
-
-python manage.py test
-
-You can also check the project configuration with:
-
-python manage.py check
-
-Before production deployment, use Django's deployment checks where appropriate.
-
-🔮 Future Improvements
-
-Possible improvements include:
-
-📈 Interactive stock charts
-
-📅 Historical price visualization
-
-🔄 Automated market-data updates
-
-🧠 More advanced ML/deep-learning models
-
-📊 Model performance comparison
-
-☁️ Cloud database integration
-
-🔔 Price/prediction alerts
-
-📱 Improved responsive design
-
-🔑 API-based stock data integration
-
-🚀 Production deployment with PostgreSQL
-
-👨‍💻 Author
-
-Ritin Setia
-
-GitHub:
-https://github.com/ritin3098-bit
-
-📄 License
-
-This project is intended for educational and portfolio purposes.
-
-⚠️ Disclaimer
-
-Stock-market prediction is a complex problem and no machine-learning model can guarantee future prices. Predictions generated by this application should not be interpreted as financial, investment, or trading advice.
+---
+*Educational/portfolio project. Not financial advice.*should not be interpreted as financial, investment, or trading advice.
