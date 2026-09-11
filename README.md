@@ -2,6 +2,9 @@
 
 A Django-based Stock Price Prediction System that combines web development and machine learning to provide stock-related predictions through a user-friendly web interface.
 
+Demo Video Link is :
+https://drive.google.com/file/d/1yiLLWwpyOZGYzGjnm9g21GjmnuKuI_g3/view?usp=drive_link
+
 🚀 Project Overview
 
 This project is built using Python, Django, Pandas, NumPy, and Machine Learning. It provides a web application where users can work with stock data and generate predictions through the Django interface.
